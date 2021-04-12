@@ -5,8 +5,8 @@ jdk: openjdk16
 install: true
 addons:
   sonarcloud:
-    organization: thonecardoso
-    token: 2ab32add289a8c4514ac7807929b99f96182eb9f
+    organization: $SONAR_ORGANIZATION
+    token: $SONAR_TOKEN
 script:
   - mvn clean package sonar:sonar -P sonar
 cache:
