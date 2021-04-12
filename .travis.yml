@@ -8,8 +8,7 @@ addons:
     organization: $SONAR_ORGANIZATION
     token: $SONAR_TOKEN
 script:
-  - mvn clean verify sonar:sonar -Psonar
-#  - mvn clean package sonar:sonar -P sonar
+  - mvn clean package sonar:sonar -P sonar
 
 cache:
   directories:
