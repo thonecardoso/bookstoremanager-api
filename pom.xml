@@ -77,11 +77,11 @@
 					</excludes>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>pl.project13.maven</groupId>
-				<artifactId>git-commit-id-plugin</artifactId>
-				<version>4.0.4</version>
-			</plugin>
+<!--			<plugin>-->
+<!--				<groupId>pl.project13.maven</groupId>-->
+<!--				<artifactId>git-commit-id-plugin</artifactId>-->
+<!--				<version>4.0.4</version>-->
+<!--			</plugin>-->
 		</plugins>
 	</build>
 
