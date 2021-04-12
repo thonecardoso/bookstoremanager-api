@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://${DATABASE_SERVER_NAME:localhost}:3306/bookstoremanager-api?createDatabaseIfNotExist=true&useSSL=false
+    username: ${DATABASE_USER_NAME:tc}
+    password: ${DATABASE_USER_PASSWORD:123456}
+  jpa:
+    hibernate:
+      # dont do this in production!!
+      ddl-auto: none
+
+    database: mysql
+    show-sql: true
