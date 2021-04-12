@@ -10,3 +10,8 @@ spring:
 
     database: mysql
     show-sql: true
+
+logging:
+  level:
+    com:
+      thonecardoso: DEBUG
