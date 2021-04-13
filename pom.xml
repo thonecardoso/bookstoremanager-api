@@ -14,7 +14,7 @@
 	<name>bookstoremanager</name>
 	<description>Bookstore Manager project</description>
 	<properties>
-		<java.version>16</java.version>
+		<java.version>11</java.version>
 
 		<sonar.projectKey>thonecardoso_bookstoremanager-api</sonar.projectKey>
 		<sonar.organization>thonecardoso</sonar.organization>
