@@ -1,7 +1,7 @@
 dist: xenial
 language: java
 sudo: false
-jdk: openjdk11
+jdk: openjdk16
 install: true
 #addons:
 #  sonarcloud:
