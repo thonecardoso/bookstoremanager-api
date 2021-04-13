@@ -1,22 +1,22 @@
 ## Status
 **READY/IN DEVELOPMENT/HOLD**
 
-## Purpose
-_Describe the problem or feature in addition to a link to the issues._
+## Description
+A few sentences describing the overall goals of the pull request's commits.
 
-## Approach
-_How does this change address the problem?_
-
-#### Open Questions and Pre-Merge TODOs
-- [ ] Use github checklists. When solved, check the box and explain the answer.
+## Todos
 - [ ] Tests
-- [ ] Documentation.
+- [ ] Documentation
 
-## Learning
-_Describe the research stage_
+## Deploy Notes
+Notes regarding deployment the contained body of work.  These should note any
+db migrations, etc.
 
-_Links to blog posts, patterns, libraries or addons used to solve this problem_
+## Steps to Test or Reproduce
+Outline the steps to test or reproduce the PR here.
 
-#### Blog Posts
-- [How to Pull Request](https://github.com/flexyford/pull-request) Github Repo with Learning focused Pull Request Template.
-
+```sh
+git pull --prune
+git checkout <feature_branch>
+bundle; script/server
+```
