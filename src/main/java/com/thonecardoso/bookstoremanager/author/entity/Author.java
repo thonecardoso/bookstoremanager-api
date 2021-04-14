@@ -1,4 +1,4 @@
-package com.thonecardoso.bookstoremanager.authors.entity;
+package com.thonecardoso.bookstoremanager.author.entity;
 
 import com.thonecardoso.bookstoremanager.books.entity.Book;
 import com.thonecardoso.bookstoremanager.entity.Auditable;

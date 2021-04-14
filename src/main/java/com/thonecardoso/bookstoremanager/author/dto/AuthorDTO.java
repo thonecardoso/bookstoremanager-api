@@ -1,4 +1,4 @@
-package com.thonecardoso.bookstoremanager.authors.dto;
+package com.thonecardoso.bookstoremanager.author.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
