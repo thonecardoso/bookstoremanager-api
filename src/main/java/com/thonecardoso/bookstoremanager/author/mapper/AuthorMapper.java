@@ -1,7 +1,7 @@
-package com.thonecardoso.bookstoremanager.authors.mapper;
+package com.thonecardoso.bookstoremanager.author.mapper;
 
-import com.thonecardoso.bookstoremanager.authors.dto.AuthorDTO;
-import com.thonecardoso.bookstoremanager.authors.entity.Author;
+import com.thonecardoso.bookstoremanager.author.dto.AuthorDTO;
+import com.thonecardoso.bookstoremanager.author.entity.Author;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

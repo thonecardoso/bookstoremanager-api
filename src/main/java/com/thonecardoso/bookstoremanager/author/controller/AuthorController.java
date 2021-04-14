@@ -1,6 +1,6 @@
-package com.thonecardoso.bookstoremanager.authors.controller;
+package com.thonecardoso.bookstoremanager.author.controller;
 
-import com.thonecardoso.bookstoremanager.authors.service.AuthorService;
+import com.thonecardoso.bookstoremanager.author.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

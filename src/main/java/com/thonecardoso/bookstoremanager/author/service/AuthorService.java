@@ -1,7 +1,7 @@
-package com.thonecardoso.bookstoremanager.authors.service;
+package com.thonecardoso.bookstoremanager.author.service;
 
-import com.thonecardoso.bookstoremanager.authors.mapper.AuthorMapper;
-import com.thonecardoso.bookstoremanager.authors.repository.AuthorRepository;
+import com.thonecardoso.bookstoremanager.author.mapper.AuthorMapper;
+import com.thonecardoso.bookstoremanager.author.repository.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
