@@ -13,4 +13,4 @@ install: true
 cache:
   directories:
     - $HOME/.m2
-    - $HOME/.sonar/cache
+#    - $HOME/.sonar/cache
