@@ -19,9 +19,11 @@ import java.util.Collections;
 
 import static com.thonecardoso.bookstoremanager.utils.JsonConversionUtils.asJsonString;
 import static org.hamcrest.core.Is.is;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -113,4 +115,15 @@ public class AuthorControllerTest {
                 .andExpect(jsonPath("$[0].age", is(expectedFoundAuthorDTO.getAge())));
     }
 
+    @Test
+    void whenDELETEWithValidIdIsCalledThenNoContentShouldBeReturned() throws Exception {
+        var expectedFoundAuthorDTO = authorDTOBuilder.builderAuthorDTO();
+        var expectedAuthorDeletedId = expectedFoundAuthorDTO.getId();
+
+        doNothing().when(authorService).delete(expectedAuthorDeletedId);
+
+        mockMvc.perform(delete(AUTHOR_API_URL_PATH + "/" + expectedAuthorDeletedId)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+    }
 }
