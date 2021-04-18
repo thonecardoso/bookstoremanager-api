@@ -25,26 +25,39 @@ public class UserDTO {
 
     @NotNull
     @Max(120)
-    private int age;
+    private Integer age;
 
     @Enumerated(EnumType.STRING)
     @NotNull
-    private Gender gender;
+    private Gender gender = Gender.MALE;
 
     @NotNull
     @NotEmpty
     @Email
-    private String email;
+    private String email = "thone@teste.com";
 
     @NotNull
     @NotEmpty
-    private String username;
+    private String username = "thonecardoso";
 
     @NotNull
     @NotEmpty
-    private String password;
+    private String password = "123456";
 
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    private LocalDate birthdate;
+    private LocalDate birthdate = LocalDate.of(1989, 8, 21);
+
+    public UserDTO buildUserDTO(){
+        return new UserDTO(
+                id,
+                name,
+                age,
+                gender,
+                email,
+                username,
+                password,
+                birthdate
+        );
+    }
 }
