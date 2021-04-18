@@ -1,17 +1,14 @@
 package com.thonecardoso.bookstoremanager.publishers.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.thonecardoso.bookstoremanager.books.entity.Book;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -32,6 +29,6 @@ public class PublisherDTO {
 
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    private Date foundationDate;
+    private LocalDate foundationDate;
 
 }

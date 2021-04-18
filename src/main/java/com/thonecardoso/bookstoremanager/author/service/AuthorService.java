@@ -6,12 +6,12 @@ import com.thonecardoso.bookstoremanager.author.exception.AuthorAlreadyExistsExc
 import com.thonecardoso.bookstoremanager.author.exception.AuthorNotFoundException;
 import com.thonecardoso.bookstoremanager.author.mapper.AuthorMapper;
 import com.thonecardoso.bookstoremanager.author.repository.AuthorRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,7 +29,6 @@ public class AuthorService {
     public AuthorDTO create(AuthorDTO authorDTO){
         verifyIfExists(authorDTO.getName());
         Author author = authorMapper.toModel(authorDTO);
-        author.setCreatedDate(LocalDate.now());
         Author createdAuthor = authorRepository.save(author);
         return authorMapper.toDTO(createdAuthor);
     }
