@@ -1,6 +1,5 @@
 package com.thonecardoso.bookstoremanager.users.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.thonecardoso.bookstoremanager.users.enums.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,35 +28,22 @@ public class UserDTO {
 
     @Enumerated(EnumType.STRING)
     @NotNull
-    private Gender gender = Gender.MALE;
+    private Gender gender;
 
     @NotNull
     @NotEmpty
     @Email
-    private String email = "thone@teste.com";
+    private String email;
 
     @NotNull
     @NotEmpty
-    private String username = "thonecardoso";
+    private String username;
 
     @NotNull
     @NotEmpty
-    private String password = "123456";
+    private String password;
 
     @NotNull
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    private LocalDate birthdate = LocalDate.of(1989, 8, 21);
+    private LocalDate birthdate;
 
-    public UserDTO buildUserDTO(){
-        return new UserDTO(
-                id,
-                name,
-                age,
-                gender,
-                email,
-                username,
-                password,
-                birthdate
-        );
-    }
 }
