@@ -1,6 +1,5 @@
 package com.thonecardoso.bookstoremanager.users.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.thonecardoso.bookstoremanager.users.enums.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,7 +24,7 @@ public class UserDTO {
 
     @NotNull
     @Max(120)
-    private int age;
+    private Integer age;
 
     @Enumerated(EnumType.STRING)
     @NotNull
@@ -45,6 +44,6 @@ public class UserDTO {
     private String password;
 
     @NotNull
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate birthdate;
+
 }
