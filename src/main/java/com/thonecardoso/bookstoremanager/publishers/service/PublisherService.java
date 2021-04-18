@@ -9,8 +9,6 @@ import com.thonecardoso.bookstoremanager.publishers.repository.PublisherReposito
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,16 +40,16 @@ public class PublisherService {
         return publisherRepository.findAll().stream().map(publisherMapper::toDTO).collect(Collectors.toList());
     }
 
+    public void delete(Long id){
+        verifyAndGetPublisher(id);
+        publisherRepository.deleteById(id);
+    }
+
     private void verifyIfExists(String name, String code) {
         publisherRepository.findByNameOrCode(name, code)
                 .ifPresent( publisher -> {
                     throw new PublisherAlreadyExistsException(name, code);
                 });
-    }
-
-    public void delete(Long id){
-        verifyAndGetPublisher(id);
-        publisherRepository.deleteById(id);
     }
 
     private Publisher verifyAndGetPublisher(Long id) {
