@@ -20,6 +20,8 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import static com.thonecardoso.bookstoremanager.utils.JsonConversionUtils.asJsonString;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -53,7 +55,7 @@ public class UserControllerTest {
         String expectedCreationMessage = "User thonecardoso with ID 1 successfully created";
         MessageDTO expectedCreationMessageDTO = MessageDTO.builder().message(expectedCreationMessage).build();
 
-        Mockito.when(userService.create(expectedUserToCreateDTO)).thenReturn(expectedCreationMessageDTO);
+        when(userService.create(expectedUserToCreateDTO)).thenReturn(expectedCreationMessageDTO);
 
         mockMvc.perform(post(USERS_API_URL_PATH)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -71,5 +73,18 @@ public class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(expectedUserToCreateDTO)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenDELETEIsCalledThenNoContentStatusShouldBeReturned() throws Exception {
+        UserDTO expectedUserToDeleteDTO = userDTOBuilder.buildUserDTO();
+
+        Long expectedUserToDeleteDTOId = expectedUserToDeleteDTO.getId();
+        doNothing().when(userService).delete(expectedUserToDeleteDTOId);
+
+        mockMvc.perform(delete(USERS_API_URL_PATH + "/" + expectedUserToDeleteDTOId)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
     }
 }
