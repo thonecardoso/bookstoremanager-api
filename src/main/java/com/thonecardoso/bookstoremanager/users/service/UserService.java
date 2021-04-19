@@ -7,10 +7,14 @@ import com.thonecardoso.bookstoremanager.users.exception.UserAlreadyExistsExcept
 import com.thonecardoso.bookstoremanager.users.exception.UserNotFoundException;
 import com.thonecardoso.bookstoremanager.users.mapper.UserMapper;
 import com.thonecardoso.bookstoremanager.users.repository.UserRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+
+import static com.thonecardoso.bookstoremanager.users.utils.MessageDTOUtils.creationMessage;
+import static com.thonecardoso.bookstoremanager.users.utils.MessageDTOUtils.updatedMessage;
 
 @Service
 public class UserService {
@@ -31,13 +35,21 @@ public class UserService {
         return creationMessage(createdUser.getUsername(), createdUser.getId());
     }
 
+    public MessageDTO update(Long id, UserDTO userToUpdateDTO) {
+        User foundUser = verifyAngGetIfExists(id);
+        User userToUpdate = userMapper.toModel(userToUpdateDTO);
+        BeanUtils.copyProperties(userToUpdate, foundUser, "createdDate", "id");
+        User updatedUser = userRepository.save(foundUser);
+        return updatedMessage(updatedUser.getUsername(), updatedUser.getId());
+    }
+
     public void delete(Long id){
-        verifyIfExists(id);
+        verifyAngGetIfExists(id);
         userRepository.deleteById(id);
     }
 
-    private void verifyIfExists(Long id) {
-        userRepository.findById(id).orElseThrow(()-> new UserNotFoundException(id));
+    private User verifyAngGetIfExists(Long id) {
+        return userRepository.findById(id).orElseThrow(()-> new UserNotFoundException(id));
     }
 
     private void verifyIsExists(String username, String email) {
@@ -47,14 +59,6 @@ public class UserService {
         }
     }
 
-    private MessageDTO creationMessage(String createdUserName, Long createdUserId) {
-        String createdUserMessage = String
-                .format("User %s with ID %s successfully created", createdUserName, createdUserId);
-
-        return MessageDTO.builder()
-                .message(createdUserMessage)
-                .build();
-    }
 
 
 }
