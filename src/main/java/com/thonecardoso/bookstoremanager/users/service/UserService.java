@@ -9,6 +9,7 @@ import com.thonecardoso.bookstoremanager.users.mapper.UserMapper;
 import com.thonecardoso.bookstoremanager.users.repository.UserRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -23,14 +24,21 @@ public class UserService {
 
     private final UserRepository userRepository;
 
+    private final PasswordEncoder passwordEncoder;
+
+
+
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public MessageDTO create(UserDTO userToCreateDTO) {
         verifyIsExists(userToCreateDTO.getUsername(), userToCreateDTO.getEmail());
         User userToCreate = userMapper.toModel(userToCreateDTO);
+        userToCreate.setPassword(passwordEncoder.encode(userToCreate.getPassword()));
+
         User createdUser = userRepository.save(userToCreate);
         return creationMessage(createdUser.getUsername(), createdUser.getId());
     }
@@ -38,6 +46,7 @@ public class UserService {
     public MessageDTO update(Long id, UserDTO userToUpdateDTO) {
         User foundUser = verifyAngGetIfExists(id);
         User userToUpdate = userMapper.toModel(userToUpdateDTO);
+        userToUpdate.setPassword(passwordEncoder.encode(userToUpdate.getPassword()));
         BeanUtils.copyProperties(userToUpdate, foundUser, "createdDate", "id");
         User updatedUser = userRepository.save(foundUser);
         return updatedMessage(updatedUser.getUsername(), updatedUser.getId());
