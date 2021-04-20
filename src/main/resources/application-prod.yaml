@@ -21,3 +21,7 @@ logging:
   level:
     com:
       thonecardoso: INFO
+
+jwt:
+  secret: bookstoremanager
+  validity: 18000
