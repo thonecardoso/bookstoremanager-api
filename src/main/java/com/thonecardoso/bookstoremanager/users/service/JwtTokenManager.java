@@ -4,7 +4,6 @@ import com.google.common.base.Function;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -36,7 +35,7 @@ public class JwtTokenManager {
                 .setClaims(claims).setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwtTokenValidity * 1000))
-                .signWith(SignatureAlgorithm.ES512, secret).compact();
+                .signWith(SignatureAlgorithm.HS512, secret).compact();
     }
 
     public String getUsernameFromToken(String token){
@@ -49,16 +48,15 @@ public class JwtTokenManager {
 
 
     private <T> T getClaimForToken(String token, Function<Claims, T> claimsResolver) {
-        Claims claims = getAllClaimsForToken(token);
+        Claims claims = getAllClaimsFromToken(token);
         return claimsResolver.apply(claims);
     }
 
-    private Claims getAllClaimsForToken(String token) {
-        Claims claims = Jwts.parser()
+    private Claims getAllClaimsFromToken(String token) {
+        return Jwts.parser()
                 .setSigningKey(secret)
                 .parseClaimsJws(token)
                 .getBody();
-        return claims;
     }
 
     public boolean validateToken(String token, UserDetails userDetails){
