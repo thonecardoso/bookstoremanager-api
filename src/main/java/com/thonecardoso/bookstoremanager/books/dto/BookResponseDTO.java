@@ -24,4 +24,5 @@ public class BookResponseDTO {
     private AuthorDTO author;
 
     private PublisherDTO publisher;
+
 }
