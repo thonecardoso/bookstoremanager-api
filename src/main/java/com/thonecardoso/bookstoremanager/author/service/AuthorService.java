@@ -9,7 +9,6 @@ import com.thonecardoso.bookstoremanager.author.repository.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,7 +32,7 @@ public class AuthorService {
     }
 
     public AuthorDTO findById(Long id) {
-        Author foundAuthor = verifyAndGetAuthor(id);
+        Author foundAuthor = verifyAndGetAuthorIfExists(id);
         return authorMapper.toDTO(foundAuthor);
     }
 
@@ -49,11 +48,11 @@ public class AuthorService {
     }
 
     public void delete(Long id){
-        verifyAndGetAuthor(id);
+        verifyAndGetAuthorIfExists(id);
         authorRepository.deleteById(id);
     }
 
-    private Author verifyAndGetAuthor(Long id) {
+    public Author verifyAndGetAuthorIfExists(Long id) {
         return authorRepository.findById(id).orElseThrow(() -> new AuthorNotFoundException(id));
     }
 
