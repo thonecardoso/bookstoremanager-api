@@ -3,6 +3,7 @@ language: java
 sudo: false
 jdk: openjdk11
 install: true
+
 addons:
   sonarcloud:
     organization: $SONAR_ORGANIZATION
