@@ -1,4 +1,5 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=thonecardoso_bookstoremanager-api&metric=alert_status)](https://sonarcloud.io/dashboard?id=thonecardoso_bookstoremanager-api)
+[![Build Status](https://travis-ci.com/thonecardoso/bookstoremanager-api.svg?branch=main)](https://travis-ci.com/thonecardoso/bookstoremanager-api)
 
 <h2>Bookstore API Manager</h2>
 
