@@ -6,13 +6,13 @@ import com.thonecardoso.bookstoremanager.books.dto.BookRequestDTO;
 import com.thonecardoso.bookstoremanager.books.dto.BookResponseDTO;
 import com.thonecardoso.bookstoremanager.books.entity.Book;
 import com.thonecardoso.bookstoremanager.books.exception.BookAlreadyExistsException;
+import com.thonecardoso.bookstoremanager.books.exception.BookNotFoundException;
 import com.thonecardoso.bookstoremanager.books.mapper.BookMapper;
 import com.thonecardoso.bookstoremanager.books.repository.BookRepository;
 import com.thonecardoso.bookstoremanager.publishers.entity.Publisher;
 import com.thonecardoso.bookstoremanager.publishers.service.PublisherService;
 import com.thonecardoso.bookstoremanager.users.dto.AuthenticatedUser;
 import com.thonecardoso.bookstoremanager.users.entity.User;
-import com.thonecardoso.bookstoremanager.books.exception.BookNotFoundException;
 import com.thonecardoso.bookstoremanager.users.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,16 +40,9 @@ public class BookService {
         User foundAuthenticatedUser = userService.verifyAndGetUserIfExists(authenticatedUser.getUsername());
         verityIfBookIsAlreadyRegistered(foundAuthenticatedUser, bookRequestDTO);
 
-        Publisher foundPublisher = publisherService.verifyAndGetPublisherIfExists(bookRequestDTO.getPublisherId());
-        Author foundAuthor = authorService.verifyAndGetAuthorIfExists(bookRequestDTO.getAuthorId());
-
         Book bookToSave = bookMapper.toModel(bookRequestDTO);
-        bookToSave.setAuthor(foundAuthor);
-        bookToSave.setPublisher(foundPublisher);
-        bookToSave.setUser(foundAuthenticatedUser);
 
-        Book savedBook = bookRepository.save(bookToSave);
-        return bookMapper.toDTO(savedBook);
+        return saveAndReturnBookResponseDTO(bookRequestDTO, foundAuthenticatedUser, bookToSave);
     }
 
     public BookResponseDTO findByIdAndUser(AuthenticatedUser authenticatedUser, Long bookId) {
@@ -72,6 +65,27 @@ public class BookService {
         User foundAuthenticatedUser = userService.verifyAndGetUserIfExists(authenticatedUser.getUsername());
         Book foundBookToDelete = verifyAndGetIfExists(bookId, foundAuthenticatedUser);
         bookRepository.deleteByIdAndUser(foundBookToDelete.getId(), foundAuthenticatedUser);
+    }
+
+    public BookResponseDTO updateByIdAndUser(AuthenticatedUser authenticatedUser, Long bookId, BookRequestDTO bookRequestDTO){
+        User foundAuthenticatedUser = userService.verifyAndGetUserIfExists(authenticatedUser.getUsername());
+        Book foundBook = verifyAndGetIfExists(bookId, foundAuthenticatedUser);
+
+        Book bookToUpdate = bookMapper.toModel(bookRequestDTO);
+        bookToUpdate.setId(foundBook.getId());
+        bookToUpdate.setCreatedDate(foundBook.getCreatedDate());
+
+        return saveAndReturnBookResponseDTO(bookRequestDTO, foundAuthenticatedUser, bookToUpdate);
+    }
+
+    private BookResponseDTO saveAndReturnBookResponseDTO(BookRequestDTO bookRequestDTO, User foundAuthenticatedUser, Book bookToSave) {
+        Publisher foundPublisher = publisherService.verifyAndGetPublisherIfExists(bookRequestDTO.getPublisherId());
+        Author foundAuthor = authorService.verifyAndGetAuthorIfExists(bookRequestDTO.getAuthorId());
+        bookToSave.setAuthor(foundAuthor);
+        bookToSave.setPublisher(foundPublisher);
+        bookToSave.setUser(foundAuthenticatedUser);
+        Book savedBook = bookRepository.save(bookToSave);
+        return bookMapper.toDTO(savedBook);
     }
 
     private Book verifyAndGetIfExists(Long bookId, User foundAuthenticatedUser) {
