@@ -148,6 +148,18 @@ public class BookServiceTest {
     }
 
     @Test
+    void whenListBookIsCalledThenItShouldBeReturned() {
+        BookResponseDTO expectedFoundBookDTO = bookResponseDTOBuilder.buildBookResponse();
+        Book expectedFoundBook = bookMapper.toModel(expectedFoundBookDTO);
+        when(userService.verifyAndGetUserIfExists(authenticatedUser.getUsername())).thenReturn(new User());
+        when(bookRepository.findAllByUser(
+                any(User.class))).thenReturn(Collections.singletonList(expectedFoundBook));
+        List<BookResponseDTO> returnedBooksResponseList = bookService.findAllByUser(authenticatedUser);
+        assertThat(returnedBooksResponseList.size(), is(1));
+        assertThat(returnedBooksResponseList.get(0), is(equalTo(expectedFoundBookDTO)));
+    }
+
+    @Test
     void whenListBookIsInformedThenAnEmptyListShouldBeReturned() {
 
         when(userService.verifyAndGetUserIfExists(authenticatedUser.getUsername())).thenReturn(new User());
