@@ -26,6 +26,7 @@ import java.util.Collections;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -102,7 +103,6 @@ public class BookControllerTest {
                 .andExpect(jsonPath("$.id", is(expectedFoundBookDTO.getId().intValue())))
                 .andExpect(jsonPath("$.name", is(expectedFoundBookDTO.getName())))
                 .andExpect(jsonPath("$.isbn", is(expectedFoundBookDTO.getIsbn())));
-
     }
 
     @Test
@@ -110,7 +110,7 @@ public class BookControllerTest {
         BookResponseDTO expectedFoundBookDTO = bookResponseDTOBuilder.buildBookResponse();
 
         when(bookService.findAllByUser(any(AuthenticatedUser.class)
-                )).thenReturn(Collections.singletonList(expectedFoundBookDTO));
+        )).thenReturn(Collections.singletonList(expectedFoundBookDTO));
 
         mockMvc.perform(MockMvcRequestBuilders.get(BOOKS_API_URL_PATH)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -120,4 +120,17 @@ public class BookControllerTest {
                 .andExpect(jsonPath("$[0].isbn", is(expectedFoundBookDTO.getIsbn())));
 
     }
+
+    @Test
+    void whenDELETEIsCalledWithValidBookIdThenNoContentStatusShouldBeReturned() throws Exception {
+        BookRequestDTO expectedDeletedBookDTO = bookRequestDTOBuilder.buildRequestBookDTO();
+        Long expectedDeletedBookDTOId = expectedDeletedBookDTO.getId();
+
+        doNothing().when(bookService).deleteByIdAndUser(any(AuthenticatedUser.class), eq(expectedDeletedBookDTOId));
+
+        mockMvc.perform(MockMvcRequestBuilders.delete(BOOKS_API_URL_PATH + "/" + expectedDeletedBookDTOId)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+    }
+
 }
