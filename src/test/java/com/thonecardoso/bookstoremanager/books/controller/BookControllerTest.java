@@ -6,7 +6,6 @@ import com.thonecardoso.bookstoremanager.books.dto.BookRequestDTO;
 import com.thonecardoso.bookstoremanager.books.dto.BookResponseDTO;
 import com.thonecardoso.bookstoremanager.books.service.BookService;
 import com.thonecardoso.bookstoremanager.users.dto.AuthenticatedUser;
-import com.thonecardoso.bookstoremanager.users.entity.User;
 import com.thonecardoso.bookstoremanager.utils.JsonConversionUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,6 +28,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -131,6 +131,24 @@ public class BookControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.delete(BOOKS_API_URL_PATH + "/" + expectedDeletedBookDTOId)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void whenPUTIsCalledThenOkStatusShouldBeReturned() throws Exception {
+        BookRequestDTO expectedBookToUpdateDTO = bookRequestDTOBuilder.buildRequestBookDTO();
+        BookResponseDTO expectedUpdatedBookDTO = bookResponseDTOBuilder.buildBookResponse();
+
+        when(bookService.updateByIdAndUser(any(AuthenticatedUser.class),
+                eq(expectedBookToUpdateDTO.getId()),
+                eq(expectedBookToUpdateDTO))).thenReturn(expectedUpdatedBookDTO);
+
+        mockMvc.perform(put(BOOKS_API_URL_PATH + "/" + expectedUpdatedBookDTO.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonConversionUtils.asJsonString(expectedBookToUpdateDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(expectedUpdatedBookDTO.getId().intValue())))
+                .andExpect(jsonPath("$.name", is(expectedUpdatedBookDTO.getName())))
+                .andExpect(jsonPath("$.isbn", is(expectedUpdatedBookDTO.getIsbn())));
     }
 
 }
