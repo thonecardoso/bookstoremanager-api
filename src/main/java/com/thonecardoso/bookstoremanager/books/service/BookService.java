@@ -12,6 +12,7 @@ import com.thonecardoso.bookstoremanager.publishers.entity.Publisher;
 import com.thonecardoso.bookstoremanager.publishers.service.PublisherService;
 import com.thonecardoso.bookstoremanager.users.dto.AuthenticatedUser;
 import com.thonecardoso.bookstoremanager.users.entity.User;
+import com.thonecardoso.bookstoremanager.books.exception.BookNotFoundException;
 import com.thonecardoso.bookstoremanager.users.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class BookService {
 
     private PublisherService publisherService;
 
-    public BookResponseDTO create(AuthenticatedUser authenticatedUser, BookRequestDTO bookRequestDTO){
+    public BookResponseDTO create(AuthenticatedUser authenticatedUser, BookRequestDTO bookRequestDTO) {
         User foundAuthenticatedUser = userService.verifyAndGetUserIfExists(authenticatedUser.getUsername());
         verityIfBookIsAlreadyRegistered(foundAuthenticatedUser, bookRequestDTO);
 
@@ -47,11 +48,18 @@ public class BookService {
         return bookMapper.toDTO(savedBook);
     }
 
+    public BookResponseDTO findByIdAndUser(AuthenticatedUser authenticatedUser, Long bookId) {
+        User foundAuthenticatedUser = userService.verifyAndGetUserIfExists(authenticatedUser.getUsername());
+        return bookRepository.findByIdAndUser(bookId, foundAuthenticatedUser)
+                .map(bookMapper::toDTO)
+                .orElseThrow(() -> new BookNotFoundException(bookId));
+    }
+
     private void verityIfBookIsAlreadyRegistered(User foundUser, BookRequestDTO bookRequestDTO) {
         bookRepository.findByNameAndIsbnAndUser(bookRequestDTO.getName(), bookRequestDTO.getIsbn(), foundUser)
-        .ifPresent(duplicatedBook -> {
-            throw new BookAlreadyExistsException(bookRequestDTO.getName(), bookRequestDTO.getIsbn(), foundUser.getUsername());
-        });
+                .ifPresent(duplicatedBook -> {
+                    throw new BookAlreadyExistsException(bookRequestDTO.getName(), bookRequestDTO.getIsbn(), foundUser.getUsername());
+                });
     }
 
 }

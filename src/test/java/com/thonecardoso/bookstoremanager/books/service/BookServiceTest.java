@@ -8,6 +8,7 @@ import com.thonecardoso.bookstoremanager.books.dto.BookRequestDTO;
 import com.thonecardoso.bookstoremanager.books.dto.BookResponseDTO;
 import com.thonecardoso.bookstoremanager.books.entity.Book;
 import com.thonecardoso.bookstoremanager.books.exception.BookAlreadyExistsException;
+import com.thonecardoso.bookstoremanager.books.exception.BookNotFoundException;
 import com.thonecardoso.bookstoremanager.books.mapper.BookMapper;
 import com.thonecardoso.bookstoremanager.books.repository.BookRepository;
 import com.thonecardoso.bookstoremanager.publishers.entity.Publisher;
@@ -15,23 +16,22 @@ import com.thonecardoso.bookstoremanager.publishers.service.PublisherService;
 import com.thonecardoso.bookstoremanager.users.dto.AuthenticatedUser;
 import com.thonecardoso.bookstoremanager.users.entity.User;
 import com.thonecardoso.bookstoremanager.users.service.UserService;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class BookServiceTest {
@@ -86,7 +86,7 @@ public class BookServiceTest {
 
         BookResponseDTO createdBookResponseDTO = bookService.create(authenticatedUser, expectedBookToCreateDTO);
 
-        MatcherAssert.assertThat(createdBookResponseDTO, Matchers.is(Matchers.equalTo(expectedCreatedBookDTO)));
+        assertThat(createdBookResponseDTO, is(equalTo(expectedCreatedBookDTO)));
 
     }
 
@@ -104,6 +104,40 @@ public class BookServiceTest {
                 any(User.class))).thenReturn(Optional.of(expectedBookToCreate));
 
         assertThrows(BookAlreadyExistsException.class, ()-> bookService.create(authenticatedUser, expectedBookToCreateDTO));
+
+    }
+
+    @Test
+    void whenExistingBookIsInformedThenABookShouldBeReturned() {
+        BookRequestDTO expectedBookToFindDTO = bookRequestDTOBuilder.buildRequestBookDTO();
+        BookResponseDTO expectedFoundBookDTO = bookResponseDTOBuilder.buildBookResponse();
+        Book expectedFoundBook = bookMapper.toModel(expectedFoundBookDTO);
+
+        when(userService.verifyAndGetUserIfExists(authenticatedUser.getUsername()))
+                .thenReturn(new User());
+
+        when(bookRepository.findByIdAndUser(
+                eq(expectedBookToFindDTO.getId()),
+                any(User.class))).thenReturn(Optional.of(expectedFoundBook));
+
+        BookResponseDTO foundBookDTO = bookService.findByIdAndUser(authenticatedUser, expectedBookToFindDTO.getId());
+
+        assertThat(foundBookDTO, is(equalTo(expectedFoundBookDTO)));
+
+    }
+
+    @Test
+    void whenNotExistingBookIsInformedThenAnExceptionShouldBeThrown() {
+        BookRequestDTO expectedBookToFindDTO = bookRequestDTOBuilder.buildRequestBookDTO();
+
+        when(userService.verifyAndGetUserIfExists(authenticatedUser.getUsername()))
+                .thenReturn(new User());
+
+        when(bookRepository.findByIdAndUser(
+                eq(expectedBookToFindDTO.getId()),
+                any(User.class))).thenReturn(Optional.empty());
+
+        assertThrows(BookNotFoundException.class, () -> bookService.findByIdAndUser(authenticatedUser, expectedBookToFindDTO.getId()));
 
     }
 }
